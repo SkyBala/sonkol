@@ -5,11 +5,17 @@ export interface ITourCard {
   description: string;
   tour_time: string;
   number_of_people: number;
-  price: number;
+  price: number ;
   when_is_tour: string;
   type: string;
   types: string[]
+  tours: {
+    image: string;
+    id: number;
+  }[]
 }
+
+
 
 interface ILoactionTransport {
   time: string;

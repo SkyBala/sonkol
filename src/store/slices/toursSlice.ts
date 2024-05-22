@@ -7,7 +7,7 @@ interface MyKnownError {
 }
 
 export const getTours = createAsyncThunk<
-  { data: ITourCard[]; types: string[] },
+  { data: Partial<ITourCard>[]; types: string[] },
   number | undefined,
   { rejectValue: MyKnownError }
 >(

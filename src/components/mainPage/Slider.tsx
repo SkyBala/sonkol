@@ -25,6 +25,8 @@ const Slider: React.FC = () => {
       // @ts-ignore
       setActiveIndex(+swiper.slides[swiper.activeIndex]?.dataset.id || 0);
   };
+  console.log( data[0]?.tours[0]?.image );
+  
 
   const swiperBreakPoints = {
     768: {
@@ -36,12 +38,14 @@ const Slider: React.FC = () => {
   };
 
   if (data.length)
+
     return (
       <section className="h-[720px] relative text-white ldt:h-[calc(100vh+400px)] ldt:max-h-[930px]">
         {data.map((tour) => (
+          
           <div
             style={{
-              backgroundImage: `url(http://${tour.images[0]})`,
+              backgroundImage:  `url(${tour?.tours[0]?.image[0]})`,
               opacity: tour.id === activeIndex ? 1 : 0,
             }}
             className="absolute top-0 left-0 w-full h-full bg-cover bg-center bg-no-repeat shadow-[inset_0_0_100px_100vw_rgba(0,_0,_0,_0.3)] animate-def"
@@ -114,7 +118,7 @@ const Slider: React.FC = () => {
                   <SwiperSlide key={`${tour.id}${index}`} data-id={tour.id}>
                     <div
                       style={{
-                        backgroundImage: `url(http://${tour.images[0]}`,
+                        backgroundImage: `url(${tour?.tours[0]?.image[0]})`
                       }}
                       className="relative rounded-[8px] p-10 w-full h-[235px] flex flex-col justify-end bg-cover bg-no-repeat bg-center animate-def before:absolute before:top-0 before:left-0 before:w-full before:h-full before:bg-[linear-gradient(180deg,_rgba(0,0,0,0.00)_0%,_rgba(0,0,0,0.70)_100%)] before:rounded-[8px] slt:h-[170px] "
                     >
