@@ -15,8 +15,8 @@ export const getBlogNewsAbout = createAsyncThunk<
   "blog-news-about",
   async ({ id, similarBlogsLimit, category }, { rejectWithValue }) => {
     try {
-      const { data } = await $api(`blog/blog/${id}`);
-      const similarData = await $api(`blog/blog/`, {
+      const { data } = await $api(`/blog_news/${id}`);
+      const similarData = await $api(`/blog_news/`, {
         params: {
           keyword: data.title,
           limit: similarBlogsLimit,

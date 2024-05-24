@@ -14,7 +14,7 @@ export const getCars = createAsyncThunk<
 >("cars", async (_, { rejectWithValue, getState }) => {
   try {
     const { transport } = getState();
-    const { data } = await $api("car/CarRental/", {
+    const { data } = await $api("/car_rentals/", {
       params: {
         offset: transport.offset,
         limit: transport.offset + transport.limit,
@@ -37,7 +37,7 @@ export const getTaxi = createAsyncThunk<
   { rejectValue: MyKnownError }
 >("taxi", async (_, { rejectWithValue }) => {
   try {
-    const { data } = await $api("car/Taxi/");
+    const { data } = await $api("/taxis/");
 
     if (!data.results.length)
       return rejectWithValue({ errorMessage: "There is nothing here yet." });

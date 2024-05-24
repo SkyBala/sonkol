@@ -1,11 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { ITaxi } from "../../@types";
 import Accordeon from "../ui/Accordeon";
 import taxiArrows from "../../assets/images/transport/taxi-arrows.svg";
 import taxi from "../../assets/images/transport/taxi.svg";
 
 interface TaxiCardProps extends ITaxi {
-  isOpen?: boolean;
   setIsOpen?: (id: number) => void;
 }
 
@@ -17,9 +16,10 @@ const TaxiCard: React.FC<TaxiCardProps> = ({
   price,
   how_hours,
   map,
-  isOpen = true,
   setIsOpen,
 }) => {
+  const [isOpen, setOpen] = useState(false);
+
   const orderTaxi = () => {
     const message = "Hello! I want to order a taxi";
     const phone = "+996706990087"
@@ -35,7 +35,10 @@ const TaxiCard: React.FC<TaxiCardProps> = ({
       spaceBetween={13}
       className="max-w-[405px] lt:max-w-none"
       isActive={isOpen}
-      handleIsActive={() => setIsOpen?.(isOpen ? 0 : id)}
+      handleIsActive={() => {
+        setOpen(!isOpen);
+        setIsOpen?.(id);
+      }}
       title={
         <div className="flex flex-grow justify-between items-center gap-[8px]">
           <span className="rounded-[6px] p-10 flex-[0_1_185px] bg-[#D2DEE3] text-start lt:flex-grow">
@@ -68,7 +71,7 @@ const TaxiCard: React.FC<TaxiCardProps> = ({
         </div>
       </div>
       <div className="mt-20 max-h-[250px] overflow-hidden flex items-center">
-        <img className="w-full object-center" src={map} alt="map" />
+        <img className="max-w-full   object-center" src={map} alt="map" />
       </div>
     </Accordeon>
   );

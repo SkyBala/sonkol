@@ -13,7 +13,7 @@ interface TourCardProps extends ITourCard {
 const TourCard: React.FC<TourCardProps> = ({
   id,
   name,
-  images,
+  tours,
   tour_time,
   number_of_people,
   price,
@@ -24,7 +24,7 @@ const TourCard: React.FC<TourCardProps> = ({
     <Link
       to={`/Tour/${id}`}
       style={{
-        background: `url(http://${images[0]}) no-repeat center`,
+        background: `url(${tours[0]?.image[0]}) no-repeat center`,
         backgroundSize: "cover",
       }}
       className={`relative w-full rounded-10 p-20 min-h-[405px] flex flex-col justify-end text-[#F3F3F3] before:absolute before:top-0 before:left-0 before:w-full before:h-full before:rounded-[8px] before:bg-[linear-gradient(180deg,_rgba(217,217,217,0.00)_0%,_rgba(0,0,0,0.60)_100%)] lt:min-h-[300px] slt:max-w-[335px] slt:min-h-[215px] tb:justify-self-center mbl:max-w-none ${className}`}

@@ -14,7 +14,7 @@ export const getReviews = createAsyncThunk<
 >("reviews", async (limit, { rejectWithValue, getState }) => {
   try {
     const { reviews } = getState();
-    const { data } = await $api("actions/comment/", {
+    const { data } = await $api("/comments/", {
       params: {
         limit: limit || reviews.limit,
         offset: reviews.offset,
@@ -56,12 +56,12 @@ export const sendReview = createAsyncThunk<
   "send-review",
   async ({ name, stars, text, photos, tour }, { rejectWithValue }) => {
     try {
-      let photosData = {};
+      const photosData = {};
       //@ts-ignore
       photos.forEach((photo: File, index) => (photosData[index + ""] = photo));
 
       await $api.post(
-        "actions/comment/",
+        "/comments/",
         {
           name,
           stars,

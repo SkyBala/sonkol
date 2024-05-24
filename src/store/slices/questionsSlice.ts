@@ -11,7 +11,7 @@ export const sendQuestion = createAsyncThunk<
   { rejectValue: MyKnownError }
 >("questions", async ({ question_text, contact }, { rejectWithValue }) => {
   try {
-    await $api.post("main_page/questions/", { question_text, contact });
+    await $api.post("/question_list/", { question_text, contact });
   } catch (error) {
     if (error instanceof Error)
       return rejectWithValue({ errorMessage: error.message });

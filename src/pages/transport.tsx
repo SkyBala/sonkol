@@ -29,6 +29,7 @@ const Transport: React.FC = () => {
   const [activeTaxiBody, setActiveTaxiBody] = useState(0);
   const [nav, setNav] = useState("cars");
   const isLt = useMatchMedia("(max-width: 1024px)");
+console.log(taxiData);
 
   useEffect(() => {
     window.scrollTo({ top: 0 });
@@ -149,18 +150,21 @@ const Transport: React.FC = () => {
               <StatusCheck
                 status={taxiStatus}
                 errorMsg={taxiMessage}
-                loadingStyles="min-h-[50vh]"
+              
               >
                 <ul className="mt-40 lt:mt-0 [&>:not(:last-child)]:mb-[13px]">
-                  {taxiData.map((taxi) => (
-                    <li key={taxi.id}>
+                  {taxiData?.map((taxi,index) => {
+                    console.log(taxi);
+                    
+                    return(
+                    <li key={index}>
                       <TaxiCard
                         {...taxi}
                         isOpen={activeTaxiBody === taxi.id}
                         setIsOpen={(id: number) => setActiveTaxiBody(id)}
                       />
-                    </li>
-                  ))}
+                    </li>)
+})}
                 </ul>
                 <div
                   style={{
@@ -168,7 +172,7 @@ const Transport: React.FC = () => {
                   }}
                   className="my-20 animate-def overflow-hidden flex items-center"
                 >
-                  <img className="w-full object-cover " src={map} alt="map" />
+                  {/* <img className="w-full object-cover " src={map} alt="map" /> */}
                 </div>
                 <Warning>
                   If you need another route, please contact us. We will try to

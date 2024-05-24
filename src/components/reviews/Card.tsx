@@ -13,6 +13,7 @@ const Card: React.FC<IReview> = ({ name, stars, text, photos, date }) => {
       slidesPerView: 3,
     },
   };
+console.log( photos);
 
   return (
     <div>

@@ -12,7 +12,7 @@ export const getTeam = createAsyncThunk<
   { rejectValue: MyKnownError }
 >("team", async (_, { rejectWithValue }) => {
   try {
-    const { data } = await $api("main_page/our_team/");
+    const { data } = await $api("/our_team/");
 
     return data.results;
   } catch (e) {

@@ -37,6 +37,7 @@ const Card: React.FC<ICar> = ({
 
     window.location.href = whatsappUrl;
   };
+console.log(images);
 
   return (
     <div className="max-w-[845px]">
@@ -48,7 +49,10 @@ const Card: React.FC<ICar> = ({
         pagination={{ clickable: true }}
         loop
       >
-        {images.map((image, key) => (
+        {images?.map((image, key) => {
+          console.log(image);
+          
+          return (
           <SwiperSlide
             className="rounded-[6px] overflow-hidden"
             key={key}
@@ -59,7 +63,7 @@ const Card: React.FC<ICar> = ({
               alt="car"
             />
           </SwiperSlide>
-        ))}
+)})}
       </Swiper>
       <div className="my-[20px] flex justify-between items-center">
         <h3 className="text-[36px] leading-[42px] lt:text-[24px] lt:leading-[28px]">
@@ -67,7 +71,7 @@ const Card: React.FC<ICar> = ({
         </h3>
         <span
           style={{
-            color: status === "Available" ? "#10CB00" : "red",
+            color: status === "Available" ? "red": "#10CB00" ,
           }}
           className="font-medium"
         >

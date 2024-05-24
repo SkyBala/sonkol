@@ -14,7 +14,8 @@ export const getBlogsNews = createAsyncThunk<
 >("blogsNews", async (_, { rejectWithValue, getState }) => {
   try {
     const { blogNews } = getState();
-    const { data } = await $api("blog/blog/", {
+    const { data } = await $api("/blog_news/", {
+      
       params: {
         search: blogNews.searchValue,
         offset: blogNews.offset,

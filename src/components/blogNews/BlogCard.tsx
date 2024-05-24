@@ -15,7 +15,7 @@ const BlogCard: React.FC<BlogCardProps> = ({
 }) => {
   return (
     <Link
-      to={`/blog/${id}`}
+      to={`/blog_news/${id}`}
       style={{ backgroundImage: `url(${image})` }}
       className={`rounded-[8px] text-white flex flex-col justify-end bg-cover bg-no-repeat bg-center text-start relative before:bg-[linear-gradient(180deg,_rgba(217,217,217,0.00)_0%,_rgba(0,0,0,0.60)_100%)] before:absolute before:w-full before:h-full before:top-0 before:left-0 before:rounded-[8px] ${
         type === "big"

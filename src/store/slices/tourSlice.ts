@@ -6,41 +6,43 @@ interface MyKnownError {
   errorMessage: string;
 }
 
+// Async thunk to fetch tour details
 export const getTour = createAsyncThunk<
   Tour,
   number,
   { rejectValue: MyKnownError }
->("tour", async (id, { rejectWithValue }) => {
+>("tour/getTour", async (id, { rejectWithValue }) => {
   try {
-    const { data } = await $api(`tour/TourAdd/${id}`);
-    const program = await $api("tour/TourProgram/", { params: { tour: id } });
-    const dates = await $api(`tour/TourDate/`);
-    const similarData = await $api("tour/TourAdd/", {
-      params: { keyword: data.name, limit: 4 },
-    });
-    const similar = similarData.data?.results.filter(
+    const { data } = await $api(`tour/${id}`);
+      const [program, dates, similarData, reviewsData] = await Promise.all([
+        $api("tour/TourProgram/", { params: { tour: id } }),
+        $api(`tour/TourDate/`),
+        $api("tour/TourAdd/", { params: { keyword: data.name, limit: 4 } }),
+        $api(`actions/comment/`),
+      ]);
+
+    const similarTours = similarData.data?.results.filter(
       (tour: ITourCard) => tour.name !== data.name
-    );
-    const reviewsData = await $api(`actions/comment/`);
-    const reviews = reviewsData?.data.results.filter(
+    ) || [];
+
+    const reviews = reviewsData.data?.results.filter(
       (review: IReview) => review.tour === data.name
-    );
+    ) || [];
 
     return {
       ...data,
-      program: program?.data,
-      dates: dates?.data.results.filter(
-        (program: { tour: string }) => program.tour === data.name
-      ),
-      reviews: reviews?.slice(0, 2) || [],
-      reviewsCount: reviews?.length || 0,
-      similarTours: similar?.results || [],
+      program: program.data,
+      dates: dates.data.results.filter((date: { tour: string }) => date.tour === data.name),
+      reviews: reviews.slice(0, 2),
+      reviewsCount: reviews.length,
+      similarTours,
     };
   } catch (e) {
     if (e instanceof Error) return rejectWithValue({ errorMessage: e.message });
   }
 });
 
+// Group tour booking form interface
 export interface GroupTourForm {
   name: string;
   email_or_whatsapp: string;
@@ -49,11 +51,12 @@ export interface GroupTourForm {
   tour: number;
 }
 
+// Async thunk to book a group tour
 export const bookGroupTour = createAsyncThunk<
   void,
   GroupTourForm,
   { rejectValue: MyKnownError }
->("book-group-tour", async (form, { rejectWithValue }) => {
+>("tour/bookGroupTour", async (form, { rejectWithValue }) => {
   try {
     await $api.post("tour/BookingGroupTour/", form);
   } catch (e) {
@@ -61,11 +64,12 @@ export const bookGroupTour = createAsyncThunk<
   }
 });
 
+// Async thunk to book a private tour
 export const bookPrivateTour = createAsyncThunk<
   void,
   GroupTourForm,
   { rejectValue: MyKnownError }
->("book-private-tour", async (form, { rejectWithValue }) => {
+>("tour/bookPrivateTour", async (form, { rejectWithValue }) => {
   try {
     await $api.post("tour/BookingPrivateTour/", {
       ...form,
@@ -76,12 +80,13 @@ export const bookPrivateTour = createAsyncThunk<
   }
 });
 
+// Initial state of the tour slice
 interface TourSliceState {
   data: Tour;
-  status: "" | "loading" | "success" | "error";
-  errorMsg: string;
-  bookGroupTourStatus: "" | "loading" | "success" | "error";
-  bookPrivateTourStatus: "" | "loading" | "success" | "error";
+  status: "idle" | "loading" | "succeeded" | "failed";
+  errorMsg: string | null;
+  bookGroupTourStatus: "idle" | "loading" | "succeeded" | "failed";
+  bookPrivateTourStatus: "idle" | "loading" | "succeeded" | "failed";
 }
 
 const initialState: TourSliceState = {
@@ -114,62 +119,57 @@ const initialState: TourSliceState = {
     type: "",
     types: [],
   },
-  status: "",
-  errorMsg: "",
-  bookGroupTourStatus: "",
-  bookPrivateTourStatus: "",
+  status: "idle",
+  errorMsg: null,
+  bookGroupTourStatus: "idle",
+  bookPrivateTourStatus: "idle",
 };
 
+// Create the tour slice
 const tourSlice = createSlice({
-  name: "tourSlice",
+  name: "tour",
   initialState,
   reducers: {
-    setBookGroupTourStatus(
-      state,
-      action: PayloadAction<"" | "loading" | "success" | "error">
-    ) {
+    setBookGroupTourStatus(state, action: PayloadAction<"idle" | "loading" | "succeeded" | "failed">) {
       state.bookGroupTourStatus = action.payload;
     },
-    setPrivateTourStatus(
-      state,
-      action: PayloadAction<"" | "loading" | "success" | "error">
-    ) {
+    setPrivateTourStatus(state, action: PayloadAction<"idle" | "loading" | "succeeded" | "failed">) {
       state.bookPrivateTourStatus = action.payload;
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(getTour.pending, (state) => {
-      state.status = "loading";
-    });
-    builder.addCase(getTour.fulfilled, (state, action) => {
-      state.data = action.payload;
-      state.status = "success";
-    });
-    builder.addCase(getTour.rejected, (state, action) => {
-      state.status = "error";
-      state.errorMsg = action.payload?.errorMessage || "Something went wrong";
-    });
-    builder.addCase(bookGroupTour.pending, (state) => {
-      state.bookGroupTourStatus = "loading";
-    });
-    builder.addCase(bookGroupTour.fulfilled, (state) => {
-      state.bookGroupTourStatus = "success";
-    });
-    builder.addCase(bookGroupTour.rejected, (state) => {
-      state.bookGroupTourStatus = "error";
-    });
-    builder.addCase(bookPrivateTour.pending, (state) => {
-      state.bookPrivateTourStatus = "loading";
-    });
-    builder.addCase(bookPrivateTour.fulfilled, (state) => {
-      state.bookPrivateTourStatus = "success";
-    });
-    builder.addCase(bookPrivateTour.rejected, (state) => {
-      state.bookPrivateTourStatus = "error";
-    });
+    builder
+      .addCase(getTour.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(getTour.fulfilled, (state, action) => {
+        state.data = action.payload;
+        state.status = "succeeded";
+      })
+      .addCase(getTour.rejected, (state, action) => {
+        state.status = "failed";
+        state.errorMsg = action.payload?.errorMessage || "Something went wrong";
+      })
+      .addCase(bookGroupTour.pending, (state) => {
+        state.bookGroupTourStatus = "loading";
+      })
+      .addCase(bookGroupTour.fulfilled, (state) => {
+        state.bookGroupTourStatus = "succeeded";
+      })
+      .addCase(bookGroupTour.rejected, (state) => {
+        state.bookGroupTourStatus = "failed";
+      })
+      .addCase(bookPrivateTour.pending, (state) => {
+        state.bookPrivateTourStatus = "loading";
+      })
+      .addCase(bookPrivateTour.fulfilled, (state) => {
+        state.bookPrivateTourStatus = "succeeded";
+      })
+      .addCase(bookPrivateTour.rejected, (state) => {
+        state.bookPrivateTourStatus = "failed";
+      });
   },
 });
 
-export const { setBookGroupTourStatus, setPrivateTourStatus } =
-  tourSlice.actions;
+export const { setBookGroupTourStatus, setPrivateTourStatus } = tourSlice.actions;
 export default tourSlice.reducer;
