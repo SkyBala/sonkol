@@ -1,16 +1,16 @@
-import React from "react";
-import { ICar } from "../../@types";
-import { Swiper, SwiperSlide } from "swiper/react";
+import React from "react"
+import { ICar } from "../../@types"
+import { Swiper, SwiperSlide } from "swiper/react"
 // @ts-ignore
-import { Navigation, Pagination } from "swiper";
-import person from "../../assets/images/transport/person.svg";
-import transmissionImg from "../../assets/images/transport/transmission.svg";
-import "swiper/css";
-import "swiper/css/navigation";
-import Warning from "../ui/Warning";
+import { Navigation, Pagination } from "swiper"
+import person from "../../assets/images/transport/person.svg"
+import transmissionImg from "../../assets/images/transport/transmission.svg"
+import "swiper/css"
+import "swiper/css/navigation"
+import Warning from "../ui/Warning"
 
 const Card: React.FC<ICar> = ({
-  images,
+  photos,
   name_car,
   status,
   capacity,
@@ -22,22 +22,19 @@ const Card: React.FC<ICar> = ({
   power,
   configuration,
   consumption,
-  per_kilometer,
-  driver_comfort,
+  car_with_driver,
   how_days_driving_without_driver,
   how_days_driving_without_driver_2,
   how_days_driving_without_driver_3,
 }) => {
   const bookCar = () => {
-    console.log('ed')
-    const message = "Hello. I want book a car";
+    const message = "Hello. I want book a car"
     const phone = "+996706990087"
-    const encodedMessage = encodeURIComponent(message);
-    const whatsappUrl = `whatsapp://send?phone=${phone}&text=${encodedMessage}`;
+    const encodedMessage = encodeURIComponent(message)
+    const whatsappUrl = `whatsapp://send?phone=${phone}&text=${encodedMessage}`
 
-    window.location.href = whatsappUrl;
-  };
-console.log(images);
+    window.location.href = whatsappUrl
+  }
 
   return (
     <div className="max-w-[845px]">
@@ -49,29 +46,19 @@ console.log(images);
         pagination={{ clickable: true }}
         loop
       >
-        {images?.map((image, key) => {
-          console.log(image);
-          
+        {photos?.map((image, key) => {
           return (
-          <SwiperSlide
-            className="rounded-[6px] overflow-hidden"
-            key={key}
-          >
-            <img
-              className="w-full outline-none max-h-[515px]"
-              src={`http://${image}`}
-              alt="car"
-            />
-          </SwiperSlide>
-)})}
+            <SwiperSlide className="rounded-[6px] overflow-hidden" key={key}>
+              <img className="w-full outline-none max-h-[515px]" src={image.car_slider} alt="car" />
+            </SwiperSlide>
+          )
+        })}
       </Swiper>
       <div className="my-[20px] flex justify-between items-center">
-        <h3 className="text-[36px] leading-[42px] lt:text-[24px] lt:leading-[28px]">
-          {name_car}
-        </h3>
+        <h3 className="text-[36px] leading-[42px] lt:text-[24px] lt:leading-[28px]">{name_car}</h3>
         <span
           style={{
-            color: status === "Available" ? "red": "#10CB00" ,
+            color: status === "Available" ? "red" : "#10CB00",
           }}
           className="font-medium"
         >
@@ -125,22 +112,15 @@ console.log(images);
           </span>
           <ul className="pt-[8px] pb-20 px-[8px] [&>:not(:last-child)]:mb-[16px]">
             <li className="flex justify-between ">
-              <h4 className="font-medium max-w-[297px] slt:max-w-none">
-                Per kilometer
-              </h4>
-              <span>{per_kilometer}$</span>
+              <h4 className="font-medium max-w-[297px] slt:max-w-none">Per kilometer</h4>
+              <span>{car_with_driver.per_kilometer}$</span>
             </li>
             <li className="flex justify-between">
-              <h4 className="font-medium max-w-[297px] slt:max-w-none">
-                Driver's food and accommodation for 1 day
-              </h4>
-              <span>{driver_comfort}$</span>
+              <h4 className="font-medium max-w-[297px] slt:max-w-none">Driver's food and accommodation for 1 day</h4>
+              <span>{car_with_driver.driver_comfort}$</span>
             </li>
           </ul>
-          <Warning
-            imgStyles="w-[25px] h-[25px]"
-            textStyles="text-[16px] leading-[18px]"
-          >
+          <Warning imgStyles="w-[25px] h-[25px]" textStyles="text-[16px] leading-[18px]">
             For pricing please contact us
           </Warning>
           <span className="block mt-20 py-10 rounded-[6px_6px_0_0] text-smooth text-center text-[18px] leading-[24px] bg-[#99D3EA]">
@@ -166,7 +146,7 @@ console.log(images);
         Book
       </button>
     </div>
-  );
-};
+  )
+}
 
-export default Card;
+export default Card

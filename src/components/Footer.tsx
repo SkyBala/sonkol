@@ -1,14 +1,14 @@
-import React from "react";
-import logo from "../assets/images/common/logo-two.svg";
-import whatsapp from "../assets/images/common/whatsapp.svg";
-import whatsappHover from "../assets/images/common/whatsapp-hover.svg";
-import tripAdvisor from "../assets/images/common/trip-advisor.svg";
-import tripAdvisorHover from "../assets/images/common/trip-advisor-hover.svg";
-import facebook from "../assets/images/common/facebook.svg";
-import facebookHover from "../assets/images/common/facebook-hover.svg";
-import instagram from "../assets/images/common/instagram.svg";
-import instagramHover from "../assets/images/common/instagram-hover.svg";
-import Icon from "./ui/Icon";
+import React from "react"
+import logo from "../assets/images/common/logo-two.svg"
+import whatsapp from "../assets/images/common/whatsapp.svg"
+import whatsappHover from "../assets/images/common/whatsapp-hover.svg"
+import tripAdvisor from "../assets/images/common/trip-advisor.svg"
+import tripAdvisorHover from "../assets/images/common/trip-advisor-hover.svg"
+import facebook from "../assets/images/common/facebook.svg"
+import facebookHover from "../assets/images/common/facebook-hover.svg"
+import instagram from "../assets/images/common/instagram.svg"
+import instagramHover from "../assets/images/common/instagram-hover.svg"
+import Icon from "./ui/Icon"
 
 const Footer: React.FC = () => {
   return (
@@ -23,17 +23,8 @@ const Footer: React.FC = () => {
           </span>
           <ul className="flex items-center gap-[30px]">
             <li>
-              <a
-                href="https://api.whatsapp.com/send?phone=996706990087"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <Icon
-                  className="w-[40px] h-[40px]"
-                  src={whatsapp}
-                  hoverSrc={whatsappHover}
-                  alt="whatsapp"
-                />
+              <a href="https://api.whatsapp.com/send?phone=996706990087" target="_blank" rel="noreferrer">
+                <Icon className="w-[40px] h-[40px]" src={whatsapp} hoverSrc={whatsappHover} alt="whatsapp" />
               </a>
             </li>
             <li>
@@ -42,40 +33,17 @@ const Footer: React.FC = () => {
                 target="_blank"
                 rel="noreferrer"
               >
-                <Icon
-                  className="w-[40px] h-[40px]"
-                  src={tripAdvisor}
-                  hoverSrc={tripAdvisorHover}
-                  alt="tripAdvisor"
-                />
+                <Icon className="w-[40px] h-[40px]" src={tripAdvisor} hoverSrc={tripAdvisorHover} alt="tripAdvisor" />
               </a>
             </li>
             <li>
-              <a
-                href="https://www.facebook.com/songkollake/"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <Icon
-                  className="w-[40px] h-[40px]"
-                  src={facebook}
-                  hoverSrc={facebookHover}
-                  alt="facebook"
-                />
+              <a href="https://www.facebook.com/songkollake/" target="_blank" rel="noreferrer">
+                <Icon className="w-[40px] h-[40px]" src={facebook} hoverSrc={facebookHover} alt="facebook" />
               </a>
             </li>
             <li className=":[&:nth-child(3)]:hover:underline">
-              <a
-                href="https://www.instagram.com/songkol_travel/"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <Icon
-                  className="w-[40px] h-[40px]"
-                  src={instagram}
-                  hoverSrc={instagramHover}
-                  alt="instagram"
-                />
+              <a href="https://www.instagram.com/songkol_travel/" target="_blank" rel="noreferrer">
+                <Icon className="w-[40px] h-[40px]" src={instagram} hoverSrc={instagramHover} alt="instagram" />
               </a>
             </li>
           </ul>
@@ -83,9 +51,7 @@ const Footer: React.FC = () => {
         <div>
           <ul className="[&>:not(:last-child)]:mb-20">
             <li className="">
-              <h3 className="text-24 mb-[4px] whitespace-nowrap">
-                Phone number, What's App
-              </h3>
+              <h3 className="text-24 mb-[4px] whitespace-nowrap">Phone number, What's App</h3>
               <a
                 className="text-18"
                 href="https://api.whatsapp.com/send?phone=996706990087"
@@ -97,29 +63,19 @@ const Footer: React.FC = () => {
             </li>
             <li>
               <h3 className="text-24 mb-[4px] whitespace-nowrap">E-mail</h3>
-              <a className="text-18" href="mailto:kenzebekovaermek@gmail.com">
-                kenzebekovaermek@gmail.com
+              <a className="text-18" href="mailto:songkol.tarvel@gmail.com">
+                songkol.tarvel@gmail.com
               </a>
             </li>
             <li>
               <h3 className="text-24 mb-[4px] whitespace-nowrap">Instagram</h3>
-              <a
-                className="text-18"
-                href="https://www.instagram.com/songkol_travel/"
-                target="_blank"
-                rel="noreferrer"
-              >
+              <a className="text-18" href="https://www.instagram.com/songkol_travel/" target="_blank" rel="noreferrer">
                 songkol_travel
               </a>
             </li>
             <li>
               <h3 className="text-24 mb-[4px] whitespace-nowrap">Facebook</h3>
-              <a
-                className="text-18"
-                href="https://www.facebook.com/songkollake/"
-                target="_blank"
-                rel="noreferrer"
-              >
+              <a className="text-18" href="https://www.facebook.com/songkollake/" target="_blank" rel="noreferrer">
                 Song-Kol Travel
               </a>
             </li>
@@ -127,7 +83,7 @@ const Footer: React.FC = () => {
         </div>
       </div>
     </footer>
-  );
-};
+  )
+}
 
-export default Footer;
+export default Footer

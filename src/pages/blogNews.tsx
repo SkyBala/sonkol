@@ -1,88 +1,69 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
-import Search from "../components/blogNews/Search";
-import { RootState, useAppDispatch } from "../store/store";
-import { getBlogsNews, setOffset } from "../store/slices/blogNewsSlice";
-import { useSelector } from "react-redux";
-import useMatchMedia from "use-match-media";
-import StatusCheck from "../components/ui/StatusCheck";
-import BlogCard from "../components/blogNews/BlogCard";
-import NewsCard from "../components/blogNews/NewsCard";
-import Pagination from "../components/ui/Pagination";
+import React, { useEffect, useState, useRef, useCallback } from "react"
+import Search from "../components/blogNews/Search"
+import { RootState, useAppDispatch } from "../store/store"
+import { getBlogsNews, setOffset } from "../store/slices/blogNewsSlice"
+import { useSelector } from "react-redux"
+import useMatchMedia from "use-match-media"
+import StatusCheck from "../components/ui/StatusCheck"
+import BlogCard from "../components/blogNews/BlogCard"
+import NewsCard from "../components/blogNews/NewsCard"
+import Pagination from "../components/ui/Pagination"
 
 const BlogNews: React.FC = () => {
-  const dispatch = useAppDispatch();
-  const [sticky, setSticky] = useState("");
-  const aside = useRef<HTMLDivElement>(null);
-  const { data, status, searchValue, offset, count, limit } = useSelector(
-    (store: RootState) => store.blogNews
-  );
-  const isLt = useMatchMedia("(max-width: 1024px)");
-  const getPagesCount = () => Math.ceil(count / limit);
-  const [nav, setNav] = useState("blog");
+  const dispatch = useAppDispatch()
+  const [sticky, setSticky] = useState("")
+  const aside = useRef<HTMLDivElement>(null)
+  const { data, status, searchValue, offset, count, limit } = useSelector((store: RootState) => store.blogNews)
+  const isLt = useMatchMedia("(max-width: 1024px)")
+  const getPagesCount = () => Math.ceil(count / limit)
+  const [nav, setNav] = useState("blog")
 
   useEffect(() => {
-    dispatch(getBlogsNews());
-  }, [searchValue, offset]);
+    dispatch(getBlogsNews())
+  }, [searchValue, offset])
 
   useEffect(() => {
-    window.scrollTo({ top: 0 });
+    window.scrollTo({ top: 0 })
     const handleScroll = () => {
-      const scrollPosition =
-        window.scrollY ||
-        window.pageYOffset ||
-        document.documentElement.scrollTop;
-      const stickyBlock = aside.current;
+      const scrollPosition = window.scrollY || window.pageYOffset || document.documentElement.scrollTop
+      const stickyBlock = aside.current
 
       //@ts-ignore
-      const asideHeight = stickyBlock?.firstChild.offsetHeight;
+      const asideHeight = stickyBlock?.firstChild.offsetHeight
       const neighborHeight =
         //@ts-ignore
-        stickyBlock?.previousElementSibling?.firstChild.offsetHeight;
+        stickyBlock?.previousElementSibling?.firstChild.offsetHeight
 
-      if (
-        stickyBlock &&
-        !isLt &&
-        asideHeight <= neighborHeight &&
-        asideHeight >= window.innerHeight
-      ) {
-        const { top } = aside.current.getBoundingClientRect();
+      if (stickyBlock && !isLt && asideHeight <= neighborHeight && asideHeight >= window.innerHeight) {
+        const { top } = aside.current.getBoundingClientRect()
 
         if (window.innerHeight <= asideHeight + top + 20) {
-          setSticky("top");
+          setSticky("top")
         } else if (
           stickyBlock.parentElement &&
-          scrollPosition +
-            (asideHeight > window.innerHeight
-              ? window.innerHeight
-              : asideHeight) >=
-            stickyBlock.parentElement?.offsetHeight +
-              stickyBlock.parentElement?.offsetTop
+          scrollPosition + (asideHeight > window.innerHeight ? window.innerHeight : asideHeight) >=
+            stickyBlock.parentElement?.offsetHeight + stickyBlock.parentElement?.offsetTop
         ) {
-          setSticky("bottom");
+          setSticky("bottom")
         } else {
-          setSticky("sticky");
+          setSticky("sticky")
         }
-      } else setSticky("top");
-    };
-    window.addEventListener("scroll", handleScroll);
+      } else setSticky("top")
+    }
+    window.addEventListener("scroll", handleScroll)
     return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
+      window.removeEventListener("scroll", handleScroll)
+    }
+  }, [])
 
   useEffect(() => {
-    const stickyBlock = aside.current;
+    const stickyBlock = aside.current
     //@ts-ignore
-    const asideHeight = stickyBlock?.firstChild.offsetHeight;
+    const asideHeight = stickyBlock?.firstChild.offsetHeight
     const neighborHeight =
       //@ts-ignore
-      stickyBlock?.previousElementSibling?.firstChild.offsetHeight;
-    if (
-      isLt &&
-      asideHeight >= neighborHeight &&
-      asideHeight <= window.innerHeight
-    )
-      setSticky("");
+      stickyBlock?.previousElementSibling?.firstChild.offsetHeight
+    if (isLt && asideHeight >= neighborHeight && asideHeight <= window.innerHeight) setSticky("")
   }, [
     //@ts-ignore
     aside.current?.firstChild.offsetHeight,
@@ -90,9 +71,9 @@ const BlogNews: React.FC = () => {
     aside.current?.previousElementSibling?.firstChild.offsetHeight,
     isLt,
     data,
-  ]);
+  ])
 
-  const blogs = data.filter((blog) => blog.category === "Blog");
+  const blogs = data.filter((blog) => blog.category === "Блог")
   const blogsArray = [...new Array(Math.ceil(blogs.length / 3))]
     .map((_, key) => blogs.slice(key * 3, (key + 1) * 3))
     .map((blogElem, key) => (
@@ -106,12 +87,12 @@ const BlogNews: React.FC = () => {
           </div>
         )}
       </div>
-    ));
-  const news = data.filter((blog) => blog.category === "News");
+    ))
+  const news = data.filter((blog) => blog.category === "Новости")
 
   const onChangePage = useCallback((newPage: number) => {
-    dispatch(setOffset((newPage - 1) * limit));
-  }, []);
+    dispatch(setOffset((newPage - 1) * limit))
+  }, [])
 
   return (
     <div className="container pt-[160px] pb-80">
@@ -125,9 +106,7 @@ const BlogNews: React.FC = () => {
             >
               Blog
             </button>
-            {nav === "blog" && (
-              <div className="rounded-[6px] h-[6px] bg-[#3C3C3C] "></div>
-            )}
+            {nav === "blog" && <div className="rounded-[6px] h-[6px] bg-[#3C3C3C] "></div>}
           </li>
           <li>
             <button
@@ -136,9 +115,7 @@ const BlogNews: React.FC = () => {
             >
               News
             </button>
-            {nav === "news" && (
-              <div className="rounded-[6px] h-[6px] bg-[#3C3C3C] "></div>
-            )}
+            {nav === "news" && <div className="rounded-[6px] h-[6px] bg-[#3C3C3C] "></div>}
           </li>
         </ul>
       </nav>
@@ -149,31 +126,19 @@ const BlogNews: React.FC = () => {
               <div>
                 <h2 className="text-[48px] leading-[56px]">Blog</h2>
                 <span className="block mt-[16px] mb-40 text-[18px] leading-[24px] text-blueDark">
-                  Here you can get useful tips and information about Kyrgyzstan
-                  and tourism in Kyrgyzstan.
+                  Here you can get useful tips and information about Kyrgyzstan and tourism in Kyrgyzstan.
                 </span>
                 <div className="flex-[0_1_840px] [&>:not(:last-child)]:mb-40">
-                  {blogsArray.length ? (
-                    blogsArray
-                  ) : (
-                    <span>There is nothing here yet.</span>
-                  )}
+                  {blogsArray.length ? blogsArray : <span>There is nothing here yet.</span>}
                 </div>
               </div>
             </section>
           )}
           {(isLt && nav !== "news") || (
-            <aside
-              ref={aside}
-              className="relative flex-[0_1_405px] lt:flex-grow"
-            >
+            <aside ref={aside} className="relative flex-[0_1_405px] lt:flex-grow">
               <div
                 className={`max-w-[405px] lt:max-w-none ${
-                  sticky === "sticky"
-                    ? "fixed bottom-[20px]"
-                    : sticky === "bottom"
-                    ? "absolute bottom-[20px]"
-                    : ""
+                  sticky === "sticky" ? "fixed bottom-[20px]" : sticky === "bottom" ? "absolute bottom-[20px]" : ""
                 }`}
               >
                 <h2 className="text-[48px] leading-[56px]">News</h2>
@@ -182,7 +147,7 @@ const BlogNews: React.FC = () => {
                 </span>
                 <div className="[&>:not(:last-child)]:mb-[54px]">
                   {news.length ? (
-                    news.map((news) => <NewsCard key={news.image} {...news} />)
+                    news.map((news, index) => <NewsCard key={index} {...news} />)
                   ) : (
                     <span>There is nothing here yet.</span>
                   )}
@@ -199,7 +164,7 @@ const BlogNews: React.FC = () => {
         className="mt-80 justify-center"
       />
     </div>
-  );
-};
+  )
+}
 
-export default BlogNews;
+export default BlogNews

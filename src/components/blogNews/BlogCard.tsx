@@ -1,21 +1,15 @@
-import React from "react";
-import { IBlogNews } from "../../@types";
-import { Link } from "react-router-dom";
+import React from "react"
+import { IBlogNews } from "../../@types"
+import { Link } from "react-router-dom"
 
 interface BlogCardProps extends IBlogNews {
-  type?: "big" | "small" | "normal";
+  type?: "big" | "small" | "normal"
 }
 
-const BlogCard: React.FC<BlogCardProps> = ({
-  id,
-  type = "normal",
-  image,
-  title,
-  date_posted,
-}) => {
+const BlogCard: React.FC<BlogCardProps> = ({ id, type = "normal", image, title, created_at }) => {
   return (
     <Link
-      to={`/blog_news/${id}`}
+      to={`/blog/${id}`}
       style={{ backgroundImage: `url(${image})` }}
       className={`rounded-[8px] text-white flex flex-col justify-end bg-cover bg-no-repeat bg-center text-start relative before:bg-[linear-gradient(180deg,_rgba(217,217,217,0.00)_0%,_rgba(0,0,0,0.60)_100%)] before:absolute before:w-full before:h-full before:top-0 before:left-0 before:rounded-[8px] ${
         type === "big"
@@ -34,11 +28,9 @@ const BlogCard: React.FC<BlogCardProps> = ({
       >
         {title}
       </h3>
-      <span className="dt:text-[14px] dt:leading-[16px] z-20">
-        {date_posted.split("-").join(".")}
-      </span>
+      <span className="dt:text-[14px] dt:leading-[16px] z-20">{created_at?.split("-").join(".")}</span>
     </Link>
-  );
-};
+  )
+}
 
-export default BlogCard;
+export default BlogCard
