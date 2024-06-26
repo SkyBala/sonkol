@@ -1,13 +1,13 @@
-import FAQ from "../pages/FAQ";
-import Tour from "../pages/Tour";
-import Tours from "../pages/Tours";
-import BlogNews from "../pages/BlogNews";
-import Reviews from "../pages/Reviews";
-import Transport from "../pages/Transport";
-import Blog from "../pages/Blog";
-import NotFoundPage from "../pages/NotFoundPage";
-import News from "../pages/News";
-import MainPage from "../pages/MainPage";
+import FAQ from "../pages/FAQ"
+import Tour from "../pages/Tour"
+import Tours from "../pages/tours"
+import BlogNews from "../pages/blogNews"
+import Reviews from "../pages/reviews"
+import Transport from "../pages/transport"
+import Blog from "../pages/Blog"
+import NotFoundPage from "../pages/NotFoundPage"
+import News from "../pages/News"
+import MainPage from "../pages/mainPage"
 
 export const router = [
   { key: 1, path: "/", element: <MainPage /> },
@@ -20,4 +20,4 @@ export const router = [
   { key: 8, path: "/blog/:id", element: <Blog /> },
   { key: 9, path: "/news/:id", element: <News /> },
   { key: 10, path: "*", element: <NotFoundPage /> },
-];
+]
