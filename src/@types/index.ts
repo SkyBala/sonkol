@@ -77,13 +77,10 @@ export interface IReview {
   stars: number
   name: string
   text: string
-  photos: string[]
+  photos: Array<{ id: number; photo: string }>
   tour: string
-  date: {
-    year: number
-    month: number
-    day: number
-  }
+  created_at: string
+  date: string
 }
 
 interface ICarPhoto {
