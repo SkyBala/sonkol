@@ -1,10 +1,10 @@
-import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { $api } from "../../http";
-import { IReview } from "../../@types";
-import { RootState } from "../store";
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit"
+import { $api } from "../../http"
+import { IReview } from "../../@types"
+import { RootState } from "../store"
 
 interface MyKnownError {
-  errorMessage: string;
+  errorMessage: string
 }
 
 export const getReviews = createAsyncThunk<
@@ -13,14 +13,14 @@ export const getReviews = createAsyncThunk<
   { rejectValue: MyKnownError; state: RootState }
 >("reviews", async (limit, { rejectWithValue, getState }) => {
   try {
-    const { reviews } = getState();
+    const { reviews } = getState()
     const { data } = await $api("/comments/", {
       params: {
         limit: limit || reviews.limit,
         offset: reviews.offset,
         [reviews.tour ? "tour" : ""]: reviews.tour,
       },
-    });
+    })
 
     const customedData = data.results?.map((review: any) => {
       return {
@@ -30,35 +30,30 @@ export const getReviews = createAsyncThunk<
           month: review.date.split("-")[1],
           day: review.date.split("-")[2].slice(0, 2),
         },
-      };
-    });
+      }
+    })
 
-    return customedData;
+    return customedData
   } catch (error) {
-    if (error instanceof Error)
-      return rejectWithValue({ errorMessage: error.message });
+    if (error instanceof Error) return rejectWithValue({ errorMessage: error.message })
   }
-});
+})
 
 interface IReviewForm {
-  name: string;
-  stars: number;
-  text: string;
-  photos: File[];
-  tour: string;
+  name: string
+  stars: number
+  text: string
+  photos: File[]
+  tour: string
 }
 
-export const sendReview = createAsyncThunk<
-  void,
-  IReviewForm,
-  { rejectValue: MyKnownError }
->(
+export const sendReview = createAsyncThunk<void, IReviewForm, { rejectValue: MyKnownError }>(
   "send-review",
   async ({ name, stars, text, photos, tour }, { rejectWithValue }) => {
     try {
-      const photosData = {};
+      const photosData = {}
       //@ts-ignore
-      photos.forEach((photo: File, index) => (photosData[index + ""] = photo));
+      photos.forEach((photo: File, index) => (photosData[index + ""] = photo))
 
       await $api.post(
         "/comments/",
@@ -74,28 +69,27 @@ export const sendReview = createAsyncThunk<
             "Content-Type": "multipart/form-data",
           },
         }
-      );
+      )
 
-      return;
+      return
     } catch (error) {
-      if (error instanceof Error)
-        return rejectWithValue({ errorMessage: error.message });
+      if (error instanceof Error) return rejectWithValue({ errorMessage: error.message })
     }
   }
-);
+)
 
-export type Sort = "-stars" | "date" | "-date";
+export type Sort = "-stars" | "date" | "-date"
 
 interface ReviewsSliceState {
-  count: number;
-  data: IReview[];
-  status: "" | "loading" | "success" | "error";
-  formStatus: "" | "loading" | "success" | "error";
-  formErrorMsg: string;
-  sortBy: Sort;
-  tour: number;
-  offset: number;
-  limit: number;
+  count: number
+  data: IReview[]
+  status: "" | "idle" | "loading" | "succeeded" | "failed"
+  formStatus: "" | "idle" | "loading" | "succeeded" | "failed"
+  formErrorMsg: string
+  sortBy: Sort
+  tour: number
+  offset: number
+  limit: number
 }
 
 const initialState: ReviewsSliceState = {
@@ -108,55 +102,51 @@ const initialState: ReviewsSliceState = {
   tour: 0,
   offset: 0,
   limit: 10,
-};
+}
 
 const reviewsSlice = createSlice({
   name: "reviewsSlice",
   initialState,
   reducers: {
     setSortBy(state, action: PayloadAction<Sort>) {
-      state.sortBy = action.payload;
+      state.sortBy = action.payload
     },
     setTour(state, action: PayloadAction<number>) {
-      state.tour = action.payload;
+      state.tour = action.payload
     },
     setOffset(state, action: PayloadAction<number>) {
-      state.offset = action.payload;
+      state.offset = action.payload
     },
     setLimit(state, action: PayloadAction<number>) {
-      state.limit = action.payload;
+      state.limit = action.payload
     },
-    setFormStatus(
-      state,
-      action: PayloadAction<"" | "loading" | "success" | "error">
-    ) {
-      state.formStatus = action.payload;
+    setFormStatus(state, action: PayloadAction<"" | "idle" | "loading" | "succeeded" | "failed">) {
+      state.formStatus = action.payload
     },
   },
   extraReducers: (builder) => {
     builder.addCase(getReviews.pending, (state) => {
-      state.status = "loading";
-    });
+      state.status = "loading"
+    })
     builder.addCase(getReviews.fulfilled, (state, action) => {
-      state.data = action.payload;
-      state.status = "success";
-    });
+      state.data = action.payload
+      state.status = "succeeded"
+    })
     builder.addCase(getReviews.rejected, (state) => {
-      state.status = "error";
-    });
+      state.status = "failed"
+    })
     builder.addCase(sendReview.pending, (state) => {
-      state.formStatus = "loading";
-    });
+      state.formStatus = "loading"
+    })
     builder.addCase(sendReview.fulfilled, (state) => {
-      state.formStatus = "success";
-    });
+      state.formStatus = "succeeded"
+    })
     builder.addCase(sendReview.rejected, (state) => {
-      state.formStatus = "error";
-      state.formErrorMsg = "Something went wrong";
-    });
+      state.formStatus = "failed"
+      state.formErrorMsg = "Something went wrong"
+    })
   },
-});
+})
 
-export const { setSortBy, setTour, setOffset, setLimit, setFormStatus } =
-  reviewsSlice.actions;
-export default reviewsSlice.reducer;
+export const { setSortBy, setTour, setOffset, setLimit, setFormStatus } = reviewsSlice.actions
+export default reviewsSlice.reducer

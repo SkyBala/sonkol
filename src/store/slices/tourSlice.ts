@@ -1,95 +1,89 @@
-import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { $api } from "../../http";
-import { IReview, ITourCard, Tour } from "../../@types";
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit"
+import { $api } from "../../http"
+import { IReview, ITourCard, Tour } from "../../@types"
 
 interface MyKnownError {
-  errorMessage: string;
+  errorMessage: string
 }
 
 // Async thunk to fetch tour details
-export const getTour = createAsyncThunk<
-  Tour,
-  number,
-  { rejectValue: MyKnownError }
->("tour/getTour", async (id, { rejectWithValue }) => {
-  try {
-    const { data } = await $api(`tour/${id}`);
+export const getTour = createAsyncThunk<Tour, number, { rejectValue: MyKnownError }>(
+  "tour/getTour",
+  async (id, { rejectWithValue }) => {
+    try {
+      const { data } = await $api(`tour/${id}`)
       const [program, dates, similarData, reviewsData] = await Promise.all([
         $api("tour/TourProgram/", { params: { tour: id } }),
         $api(`tour/TourDate/`),
         $api("tour/TourAdd/", { params: { keyword: data.name, limit: 4 } }),
         $api(`actions/comment/`),
-      ]);
+      ])
 
-    const similarTours = similarData.data?.results.filter(
-      (tour: ITourCard) => tour.name !== data.name
-    ) || [];
+      const similarTours = similarData.data?.results.filter((tour: ITourCard) => tour.name !== data.name) || []
 
-    const reviews = reviewsData.data?.results.filter(
-      (review: IReview) => review.tour === data.name
-    ) || [];
+      const reviews = reviewsData.data?.results.filter((review: IReview) => review.tour === data.name) || []
 
-    return {
-      ...data,
-      program: program.data,
-      dates: dates.data.results.filter((date: { tour: string }) => date.tour === data.name),
-      reviews: reviews.slice(0, 2),
-      reviewsCount: reviews.length,
-      similarTours,
-    };
-  } catch (e) {
-    if (e instanceof Error) return rejectWithValue({ errorMessage: e.message });
+      return {
+        ...data,
+        program: program.data,
+        dates: dates.data.results.filter((date: { tour: string }) => date.tour === data.name),
+        reviews: reviews.slice(0, 2),
+        reviewsCount: reviews.length,
+        similarTours,
+      }
+    } catch (e) {
+      if (e instanceof Error) return rejectWithValue({ errorMessage: e.message })
+    }
   }
-});
+)
 
 // Group tour booking form interface
 export interface GroupTourForm {
-  name: string;
-  email_or_whatsapp: string;
-  date: number | string;
-  date_str: string;
-  tour: number;
+  name: string
+  email_or_whatsapp: string
+  date: number | string
+  date_str: string
+  tour: number
 }
 
 // Async thunk to book a group tour
-export const bookGroupTour = createAsyncThunk<
-  void,
-  GroupTourForm,
-  { rejectValue: MyKnownError }
->("tour/bookGroupTour", async (form, { rejectWithValue }) => {
-  try {
-    await $api.post("tour/BookingGroupTour/", form);
-  } catch (e) {
-    if (e instanceof Error) return rejectWithValue({ errorMessage: e.message });
+export const bookGroupTour = createAsyncThunk<void, GroupTourForm, { rejectValue: MyKnownError }>(
+  "tour/bookGroupTour",
+  async (form, { rejectWithValue }) => {
+    try {
+      await $api.post("tour/BookingGroupTour/", form)
+    } catch (e) {
+      if (e instanceof Error) return rejectWithValue({ errorMessage: e.message })
+    }
   }
-});
+)
 
 // Async thunk to book a private tour
-export const bookPrivateTour = createAsyncThunk<
-  void,
-  GroupTourForm,
-  { rejectValue: MyKnownError }
->("tour/bookPrivateTour", async (form, { rejectWithValue }) => {
-  try {
-    await $api.post("tour/BookingPrivateTour/", {
-      ...form,
-      date_up_to: form.date_str,
-    });
-  } catch (e) {
-    if (e instanceof Error) return rejectWithValue({ errorMessage: e.message });
+export const bookPrivateTour = createAsyncThunk<void, GroupTourForm, { rejectValue: MyKnownError }>(
+  "tour/bookPrivateTour",
+  async (form, { rejectWithValue }) => {
+    try {
+      await $api.post("tour/BookingPrivateTour/", {
+        ...form,
+        date_up_to: form.date_str,
+      })
+    } catch (e) {
+      if (e instanceof Error) return rejectWithValue({ errorMessage: e.message })
+    }
   }
-});
+)
 
 // Initial state of the tour slice
 interface TourSliceState {
-  data: Tour;
-  status: "idle" | "loading" | "succeeded" | "failed";
-  errorMsg: string | null;
-  bookGroupTourStatus: "idle" | "loading" | "succeeded" | "failed";
-  bookPrivateTourStatus: "idle" | "loading" | "succeeded" | "failed";
+  data: Tour
+  status: "" | "idle" | "loading" | "succeeded" | "failed"
+  errorMsg?: string
+  bookGroupTourStatus: "" | "idle" | "loading" | "succeeded" | "failed"
+  bookPrivateTourStatus: "" | "idle" | "loading" | "succeeded" | "failed"
 }
 
 const initialState: TourSliceState = {
+  //@ts-ignore
   data: {
     id: 0,
     name: "",
@@ -120,56 +114,55 @@ const initialState: TourSliceState = {
     types: [],
   },
   status: "idle",
-  errorMsg: null,
   bookGroupTourStatus: "idle",
   bookPrivateTourStatus: "idle",
-};
+}
 
 // Create the tour slice
 const tourSlice = createSlice({
   name: "tour",
   initialState,
   reducers: {
-    setBookGroupTourStatus(state, action: PayloadAction<"idle" | "loading" | "succeeded" | "failed">) {
-      state.bookGroupTourStatus = action.payload;
+    setBookGroupTourStatus(state, action: PayloadAction<"" | "idle" | "loading" | "succeeded" | "failed">) {
+      state.bookGroupTourStatus = action.payload
     },
-    setPrivateTourStatus(state, action: PayloadAction<"idle" | "loading" | "succeeded" | "failed">) {
-      state.bookPrivateTourStatus = action.payload;
+    setPrivateTourStatus(state, action: PayloadAction<"" | "idle" | "loading" | "succeeded" | "failed">) {
+      state.bookPrivateTourStatus = action.payload
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(getTour.pending, (state) => {
-        state.status = "loading";
+        state.status = "loading"
       })
       .addCase(getTour.fulfilled, (state, action) => {
-        state.data = action.payload;
-        state.status = "succeeded";
+        state.data = action.payload
+        state.status = "succeeded"
       })
       .addCase(getTour.rejected, (state, action) => {
-        state.status = "failed";
-        state.errorMsg = action.payload?.errorMessage || "Something went wrong";
+        state.status = "failed"
+        state.errorMsg = action.payload?.errorMessage || "Something went wrong"
       })
       .addCase(bookGroupTour.pending, (state) => {
-        state.bookGroupTourStatus = "loading";
+        state.bookGroupTourStatus = "loading"
       })
       .addCase(bookGroupTour.fulfilled, (state) => {
-        state.bookGroupTourStatus = "succeeded";
+        state.bookGroupTourStatus = "succeeded"
       })
       .addCase(bookGroupTour.rejected, (state) => {
-        state.bookGroupTourStatus = "failed";
+        state.bookGroupTourStatus = "failed"
       })
       .addCase(bookPrivateTour.pending, (state) => {
-        state.bookPrivateTourStatus = "loading";
+        state.bookPrivateTourStatus = "loading"
       })
       .addCase(bookPrivateTour.fulfilled, (state) => {
-        state.bookPrivateTourStatus = "succeeded";
+        state.bookPrivateTourStatus = "succeeded"
       })
       .addCase(bookPrivateTour.rejected, (state) => {
-        state.bookPrivateTourStatus = "failed";
-      });
+        state.bookPrivateTourStatus = "failed"
+      })
   },
-});
+})
 
-export const { setBookGroupTourStatus, setPrivateTourStatus } = tourSlice.actions;
-export default tourSlice.reducer;
+export const { setBookGroupTourStatus, setPrivateTourStatus } = tourSlice.actions
+export default tourSlice.reducer

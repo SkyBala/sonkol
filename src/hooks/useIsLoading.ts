@@ -1,14 +1,11 @@
-import { useSelector } from "react-redux";
-import { RootState } from "../store/store";
+import { useSelector } from "react-redux"
+import { RootState } from "../store/store"
 
 export const useIsLoading = () => {
-  const tour = useSelector((state: RootState) => state.tour);
-  const tours = useSelector((state: RootState) => state.tours);
+  const tour = useSelector((state: RootState) => state.tour)
+  const tours = useSelector((state: RootState) => state.tours)
 
   return (
-    tour.status === "loading" ||
-    tour.status === "error" ||
-    tours.status === "loading" ||
-    tours.status === "error"
-  );
-};
+    tour.status === "loading" || tour.status === "failed" || tours.status === "loading" || tours.status === "failed"
+  )
+}
