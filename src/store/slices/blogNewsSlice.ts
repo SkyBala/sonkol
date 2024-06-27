@@ -1,10 +1,10 @@
-import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { $api } from "../../http";
-import { IBlogNews } from "../../@types";
-import { RootState } from "../store";
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit"
+import { $api } from "../../http"
+import { IBlogNews } from "../../@types"
+import { RootState } from "../store"
 
 interface MyKnownError {
-  errorMessage: string;
+  errorMessage: string
 }
 
 export const getBlogsNews = createAsyncThunk<
@@ -13,30 +13,28 @@ export const getBlogsNews = createAsyncThunk<
   { rejectValue: MyKnownError; state: RootState }
 >("blogsNews", async (_, { rejectWithValue, getState }) => {
   try {
-    const { blogNews } = getState();
+    const { blogNews } = getState()
     const { data } = await $api("/blog_news/", {
-      
       params: {
         search: blogNews.searchValue,
         offset: blogNews.offset,
         limit: blogNews.offset + blogNews.limit,
       },
-    });
+    })
 
-    return data;
+    return data
   } catch (error) {
-    if (error instanceof Error)
-      return rejectWithValue({ errorMessage: error.message });
+    if (error instanceof Error) return rejectWithValue({ errorMessage: error.message })
   }
-});
+})
 
 interface BlogNewsSliceState {
-  status: "" | "success" | "loading" | "error";
-  count: number;
-  offset: number;
-  limit: number;
-  data: IBlogNews[];
-  searchValue: string;
+  status: "" | "idle" | "loading" | "succeeded" | "failed"
+  count: number
+  offset: number
+  limit: number
+  data: IBlogNews[]
+  searchValue: string
 }
 
 const initialState: BlogNewsSliceState = {
@@ -46,33 +44,33 @@ const initialState: BlogNewsSliceState = {
   limit: 10,
   data: [],
   searchValue: "",
-};
+}
 
 const blogNewsSlice = createSlice({
   name: "blogNewsSlice",
   initialState,
   reducers: {
     setSearchValue(state, action: PayloadAction<string>) {
-      state.searchValue = action.payload;
+      state.searchValue = action.payload
     },
     setOffset(state, action: PayloadAction<number>) {
-      state.offset = action.payload;
+      state.offset = action.payload
     },
   },
   extraReducers: (builder) => {
     builder.addCase(getBlogsNews.pending, (state) => {
-      state.status = "loading";
-    });
+      state.status = "loading"
+    })
     builder.addCase(getBlogsNews.fulfilled, (state, action) => {
-      state.status = "success";
-      state.count = action.payload.count;
-      state.data = action.payload.results;
-    });
+      state.status = "succeeded"
+      state.count = action.payload.count
+      state.data = action.payload.results
+    })
     builder.addCase(getBlogsNews.rejected, (state) => {
-      state.status = "error";
-    });
+      state.status = "failed"
+    })
   },
-});
+})
 
-export const { setSearchValue, setOffset } = blogNewsSlice.actions;
-export default blogNewsSlice.reducer;
+export const { setSearchValue, setOffset } = blogNewsSlice.actions
+export default blogNewsSlice.reducer

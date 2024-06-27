@@ -1,12 +1,12 @@
-import React from "react";
-import loadingGif from "../../assets/images/ui/loading.gif";
+import React from "react"
+import loadingGif from "../../assets/images/ui/loading.gif"
 
 interface StatusCheckProps {
-  status: "" | "loading" | "success" | "error";
-  children: React.ReactNode;
-  errorMsg?: string;
-  className?: string;
-  loadingStyles?: string;
+  status: "" | "idle" | "loading" | "succeeded" | "failed"
+  children: React.ReactNode
+  errorMsg?: string
+  className?: string
+  loadingStyles?: string
 }
 
 const StatusCheck: React.FC<StatusCheckProps> = ({
@@ -16,25 +16,23 @@ const StatusCheck: React.FC<StatusCheckProps> = ({
   className = "",
   loadingStyles = "",
 }) => {
-  if (status === "success") return <>{children}</>;
+  if (status === "succeeded") return <>{children}</>
 
   return (
     <div
       className={` ${
-        status === "loading" || status === "error"
-          ? `flex justify-center items-center ${
-              loadingStyles || "min-h-screen"
-            }`
+        status === "loading" || status === "failed"
+          ? `flex justify-center items-center ${loadingStyles || "min-h-screen"}`
           : className
       } `}
     >
-      {status === "error" ? (
+      {status === "failed" ? (
         <h2 className="text-center text-[24px]">{errorMsg}</h2>
       ) : (
         <img className={`w-[200px] h-[200px]`} src={loadingGif} alt="loading" />
       )}
     </div>
-  );
-};
+  )
+}
 
-export default StatusCheck;
+export default StatusCheck

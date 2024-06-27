@@ -1,57 +1,57 @@
-import React, { useEffect, useState } from "react";
-import StageForm from "./StageForm";
-import { useInput } from "../../hooks/useInput";
-import { RootState, useAppDispatch } from "../../store/store";
-import { sendReview, setFormStatus } from "../../store/slices/reviewsSlice";
-import { useSelector } from "react-redux";
-import loading from "../../assets/images/ui/loading.gif";
+import React, { useEffect, useState } from "react"
+import StageForm from "./StageForm"
+import { useInput } from "../../hooks/useInput"
+import { RootState, useAppDispatch } from "../../store/store"
+import { sendReview, setFormStatus } from "../../store/slices/reviewsSlice"
+import { useSelector } from "react-redux"
+import loading from "../../assets/images/ui/loading.gif"
 
 export interface Stages {
-  first: string;
-  second: string;
-  third: string;
-  fourth: string;
-  fifth: string;
+  first: string
+  second: string
+  third: string
+  fourth: string
+  fifth: string
 }
 
 const Form: React.FC = () => {
-  const dispatch = useAppDispatch();
-  const status = useSelector((state: RootState) => state.reviews.formStatus);
+  const dispatch = useAppDispatch()
+  const status = useSelector((state: RootState) => state.reviews.formStatus)
   const [stages, setStages] = useState({
     first: "active",
     second: "",
     third: "",
     fourth: "",
     fifth: "",
-  });
-  const [stageNumber, setStageNumber] = useState(1);
-  const [stars, setStars] = useState(0);
-  const name = useInput("", { isEmpty: false, minLength: 2 });
+  })
+  const [stageNumber, setStageNumber] = useState(1)
+  const [stars, setStars] = useState(0)
+  const name = useInput("", { isEmpty: false, minLength: 2 })
   const description = useInput("", {
     isEmpty: false,
     minLength: 1,
     maxLength: 1000,
-  });
-  const [images, setImages] = useState<string[]>([]);
-  const [imageFiles, setImageFiles] = useState<File[]>([]);
-  const feedBack = useInput("", { isEmpty: true, minLength: 2 });
-  const inputs = [name, description, images, feedBack];
-  let sendFormTimeout: number;
+  })
+  const [images, setImages] = useState<string[]>([])
+  const [imageFiles, setImageFiles] = useState<File[]>([])
+  const feedBack = useInput("", { isEmpty: true, minLength: 2 })
+  const inputs = [name, description, images, feedBack]
+  let sendFormTimeout: number
 
   useEffect(() => {
     Object.keys(stages).forEach((elem, i) => {
       //@ts-ignore
-      stages[elem] === "active" && setStageNumber(i + 1);
-    });
-  }, [stages]);
+      stages[elem] === "active" && setStageNumber(i + 1)
+    })
+  }, [stages])
 
   useEffect(() => {
-    if (status === "success" || status === "error")
-      sendFormTimeout = setTimeout(() => dispatch(setFormStatus("")), 4000);
+    if (status === "succeeded" || status === "failed")
+      sendFormTimeout = setTimeout(() => dispatch(setFormStatus("")), 4000)
     return () => {
-      clearTimeout(sendFormTimeout);
-    };
-  }, [status]);
+      clearTimeout(sendFormTimeout)
+    }
+  }, [status])
 
   const handleStages = (stage: string | number) => {
     setStages((stages) => {
@@ -61,55 +61,55 @@ const Form: React.FC = () => {
         third: "",
         fourth: "",
         fifth: "",
-      };
-      let isFoundActive = false;
+      }
+      let isFoundActive = false
       Object.keys(stages).forEach((elem, key) => {
         if (elem === stage || key + 1 === stage) {
           // @ts-ignore
-          newStages[elem] = "active";
-          isFoundActive = true;
+          newStages[elem] = "active"
+          isFoundActive = true
         }
         // @ts-ignore
-        else newStages[elem] = isFoundActive ? "" : "finish";
-      });
+        else newStages[elem] = isFoundActive ? "" : "finish"
+      })
 
-      return newStages;
-    });
-  };
+      return newStages
+    })
+  }
 
-  const getCurrentStage = () => Object.keys(stages)[stageNumber - 1];
-  const backStage = () => handleStages(stageNumber - 1);
-  const nextStage = () => handleStages(stageNumber + 1);
+  const getCurrentStage = () => Object.keys(stages)[stageNumber - 1]
+  const backStage = () => handleStages(stageNumber - 1)
+  const nextStage = () => handleStages(stageNumber + 1)
   const skipStage = () => {
-    const currInp = inputs[stageNumber - 2];
+    const currInp = inputs[stageNumber - 2]
     //@ts-ignore
     if (stageNumber === 2) {
       //@ts-ignore
-      currInp?.onChangeOther("username");
+      currInp?.onChangeOther("username")
     } else if (stageNumber === 4) {
-      setImages([]);
+      setImages([])
     } else {
       //@ts-ignore
-      currInp?.onChangeOther("");
+      currInp?.onChangeOther("")
     }
-    handleStages(stageNumber + 1);
-  };
+    handleStages(stageNumber + 1)
+  }
 
   const clearForm = () => {
-    setStars(0);
-    name.onChangeOther("");
-    name.handleIsDirty(false);
-    description.onChangeOther("");
-    description.handleIsDirty(false);
-    setImages([]);
-    feedBack.onChangeOther("");
-    feedBack.handleIsDirty(false);
-  };
+    setStars(0)
+    name.onChangeOther("")
+    name.handleIsDirty(false)
+    description.onChangeOther("")
+    description.handleIsDirty(false)
+    setImages([])
+    feedBack.onChangeOther("")
+    feedBack.handleIsDirty(false)
+  }
 
   const sendForm = () => {
-    const photos = new FormData();
-    imageFiles?.forEach((image, i) => photos.append(`image${i}`, image));
-    console.log(photos, imageFiles);
+    const photos = new FormData()
+    imageFiles?.forEach((image, i) => photos.append(`image${i}`, image))
+    console.log(photos, imageFiles)
 
     dispatch(
       sendReview({
@@ -119,14 +119,14 @@ const Form: React.FC = () => {
         photos: imageFiles,
         tour: feedBack.value,
       })
-    );
-    clearForm();
-    handleStages(1);
-  };
+    )
+    clearForm()
+    handleStages(1)
+  }
 
   const handleEnter = (event: KeyboardEvent) => {
-    const currInp = inputs[stageNumber - 2];
-    if (stageNumber === 5 && event.key === "Enter") sendForm();
+    const currInp = inputs[stageNumber - 2]
+    if (stageNumber === 5 && event.key === "Enter") sendForm()
     else if (
       stageNumber >= 2 &&
       // @ts-ignore
@@ -134,7 +134,7 @@ const Form: React.FC = () => {
       event.key === "Enter" &&
       !event.ctrlKey
     ) {
-      nextStage();
+      nextStage()
     }
 
     if (event.ctrlKey && event.key === "Enter")
@@ -142,54 +142,52 @@ const Form: React.FC = () => {
       inputs[stageNumber - 2]?.onChangeOther(
         // @ts-ignore
         inputs[stageNumber - 2]?.value + "\n"
-      );
-  };
+      )
+  }
 
   useEffect(() => {
-    document.body.addEventListener("keydown", handleEnter);
+    document.body.addEventListener("keydown", handleEnter)
     return () => {
-      document.body.removeEventListener("keydown", handleEnter);
-    };
-  }, [stageNumber, inputs[stageNumber - 2]]);
+      document.body.removeEventListener("keydown", handleEnter)
+    }
+  }, [stageNumber, inputs[stageNumber - 2]])
 
   const handleStars = (starsCount: number) => {
-    setStars(starsCount);
-  };
+    setStars(starsCount)
+  }
   const handleImages = (newImages: string[]) => {
-    setImages(newImages);
-  };
+    setImages(newImages)
+  }
   const handleImageFiles = (newImages: File[]) => {
-    setImageFiles(newImages);
-  };
+    setImageFiles(newImages)
+  }
 
-  const activeStageStyle = "border-[3px] border-[#0092CB] bg-[#D2DEE3]";
-  const finishStageStyle = "bg-[#0092CB]";
+  const activeStageStyle = "border-[3px] border-[#0092CB] bg-[#D2DEE3]"
+  const finishStageStyle = "bg-[#0092CB]"
 
-  if (status === "success")
+  if (status === "succeeded")
     return (
       <div className="mx-auto max-w-[900px] min-h-[390px] flex justify-center items-center">
         <p className="text-center text-blueLight text-[24px] leading-[28px]">
-          Thank you for your feedback! Your review has been successfully
-          submitted and will be published as soon as it passes moderation.
+          Thank you for your feedback! Your review has been successfully submitted and will be published as soon as it
+          passes moderation.
         </p>
       </div>
-    );
+    )
 
   if (status === "loading")
     return (
       <div className="mx-auto max-w-[900px] min-h-[390px] flex justify-center items-center">
         <img src={loading} alt="loading" />
       </div>
-    );
+    )
 
-  if (status === "error")
+  if (status === "failed")
     return (
       <div className="mx-auto max-w-[900px] min-h-[390px] flex justify-center items-center">
-        <p className="text-center text-red text-[24px] leading-[28px]">
-          Something went wrong
-        </p>
+        <p className="text-center text-red text-[24px] leading-[28px]">Something went wrong</p>
       </div>
-    );
+    )
 
   return (
     <div className="mx-auto max-w-[900px]">
@@ -267,7 +265,7 @@ const Form: React.FC = () => {
         ))}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Form;
+export default Form

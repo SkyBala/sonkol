@@ -1,10 +1,10 @@
-import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { RootState } from "../store";
-import { ICar, ITaxi } from "../../@types";
-import { $api } from "../../http";
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit"
+import { RootState } from "../store"
+import { ICar, ITaxi } from "../../@types"
+import { $api } from "../../http"
 
 interface MyKnownError {
-  errorMessage: string;
+  errorMessage: string
 }
 
 export const getCars = createAsyncThunk<
@@ -13,52 +13,47 @@ export const getCars = createAsyncThunk<
   { rejectValue: MyKnownError; state: RootState }
 >("cars", async (_, { rejectWithValue, getState }) => {
   try {
-    const { transport } = getState();
+    const { transport } = getState()
     const { data } = await $api("/car_rentals/", {
       params: {
         offset: transport.offset,
         limit: transport.offset + transport.limit,
       },
-    });
+    })
 
-    if (!data.results.length)
-      return rejectWithValue({ errorMessage: "There is nothing here yet." });
+    if (!data.results.length) return rejectWithValue({ errorMessage: "There is nothing here yet." })
 
-    return data;
+    return data
   } catch (error) {
-    if (error instanceof Error)
-      return rejectWithValue({ errorMessage: error.message });
+    if (error instanceof Error) return rejectWithValue({ errorMessage: error.message })
   }
-});
+})
 
-export const getTaxi = createAsyncThunk<
-  { results: ITaxi[] },
-  void,
-  { rejectValue: MyKnownError }
->("taxi", async (_, { rejectWithValue }) => {
-  try {
-    const { data } = await $api("/taxis/");
+export const getTaxi = createAsyncThunk<{ results: ITaxi[] }, void, { rejectValue: MyKnownError }>(
+  "taxi",
+  async (_, { rejectWithValue }) => {
+    try {
+      const { data } = await $api("/taxis/")
 
-    if (!data.results.length)
-      return rejectWithValue({ errorMessage: "There is nothing here yet." });
+      if (!data.results.length) return rejectWithValue({ errorMessage: "There is nothing here yet." })
 
-    return data;
-  } catch (error) {
-    if (error instanceof Error)
-      return rejectWithValue({ errorMessage: error.message });
+      return data
+    } catch (error) {
+      if (error instanceof Error) return rejectWithValue({ errorMessage: error.message })
+    }
   }
-});
+)
 
 interface TransportSliceState {
-  status: "" | "success" | "loading" | "error";
-  message: string;
-  taxiStatus: "" | "success" | "loading" | "error";
-  taxiMessage: string;
-  count: number;
-  data: ICar[];
-  taxiData: ITaxi[];
-  offset: number;
-  limit: number;
+  status: "" | "idle" | "loading" | "succeeded" | "failed"
+  message: string
+  taxiStatus: "" | "idle" | "loading" | "succeeded" | "failed"
+  taxiMessage: string
+  count: number
+  data: ICar[]
+  taxiData: ITaxi[]
+  offset: number
+  limit: number
 }
 
 const initialState: TransportSliceState = {
@@ -71,42 +66,42 @@ const initialState: TransportSliceState = {
   taxiData: [],
   offset: 0,
   limit: 5,
-};
+}
 
 const transportSlice = createSlice({
   name: "transportSlice",
   initialState,
   reducers: {
     setOffset(state, action: PayloadAction<number>) {
-      state.offset = action.payload;
+      state.offset = action.payload
     },
   },
   extraReducers: (builder) => {
     builder.addCase(getCars.pending, (state) => {
-      state.status = "loading";
-    });
+      state.status = "loading"
+    })
     builder.addCase(getTaxi.pending, (state) => {
-      state.taxiStatus = "loading";
-    });
+      state.taxiStatus = "loading"
+    })
     builder.addCase(getCars.fulfilled, (state, action) => {
-      state.status = "success";
-      state.data = action.payload.results;
-      state.count = action.payload.count;
-    });
+      state.status = "succeeded"
+      state.data = action.payload.results
+      state.count = action.payload.count
+    })
     builder.addCase(getTaxi.fulfilled, (state, action) => {
-      state.taxiStatus = "success";
-      state.taxiData = action.payload.results;
-    });
+      state.taxiStatus = "succeeded"
+      state.taxiData = action.payload.results
+    })
     builder.addCase(getCars.rejected, (state, action) => {
-      state.status = "error";
-      state.message = action.payload?.errorMessage || "";
-    });
+      state.status = "failed"
+      state.message = action.payload?.errorMessage || ""
+    })
     builder.addCase(getTaxi.rejected, (state, action) => {
-      state.taxiStatus = "error";
-      state.taxiMessage = action.payload?.errorMessage || "";
-    });
+      state.taxiStatus = "failed"
+      state.taxiMessage = action.payload?.errorMessage || ""
+    })
   },
-});
+})
 
-export const { setOffset } = transportSlice.actions;
-export default transportSlice.reducer;
+export const { setOffset } = transportSlice.actions
+export default transportSlice.reducer

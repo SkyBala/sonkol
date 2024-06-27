@@ -137,6 +137,7 @@ export interface IBlogNews {
     id: number
     slides: string
   }>
+  similar: any
 }
 
 export interface ITeamPerson {

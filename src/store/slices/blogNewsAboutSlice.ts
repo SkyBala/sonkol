@@ -1,47 +1,40 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { RootState } from "../store";
-import { $api } from "../../http";
-import { IBlogNews } from "../../@types";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
+import { RootState } from "../store"
+import { $api } from "../../http"
+import { IBlogNews } from "../../@types"
 
 interface MyKnownError {
-  errorMessage: string;
+  errorMessage: string
 }
 
 export const getBlogNewsAbout = createAsyncThunk<
   IBlogNews,
   { id: number; similarBlogsLimit: number; category: string },
   { rejectValue: MyKnownError; state: RootState }
->(
-  "blog-news-about",
-  async ({ id, similarBlogsLimit, category }, { rejectWithValue }) => {
-    try {
-      const { data } = await $api(`/blog_news/${id}`);
-      const similarData = await $api(`/blog_news/`, {
-        params: {
-          keyword: data.title,
-          limit: similarBlogsLimit,
-          category,
-        },
-      });
-      const similar = similarData.data.results.filter(
-        (blogNews: IBlogNews) => blogNews.title !== data.title
-      );
+>("blog-news-about", async ({ id, similarBlogsLimit, category }, { rejectWithValue }) => {
+  try {
+    const { data } = await $api(`/blog_news/${id}`)
+    const similarData = await $api(`/blog_news/`, {
+      params: {
+        keyword: data.title,
+        limit: similarBlogsLimit,
+        category,
+      },
+    })
+    const similar = similarData.data.results.filter((blogNews: IBlogNews) => blogNews.title !== data.title)
 
-      if (!data)
-        return rejectWithValue({ errorMessage: "This blog does not exist" });
+    if (!data) return rejectWithValue({ errorMessage: "This blog does not exist" })
 
-      return { ...data, similar: similar };
-    } catch (error) {
-      if (error instanceof Error)
-        return rejectWithValue({ errorMessage: error.message });
-    }
+    return { ...data, similar: similar }
+  } catch (error) {
+    if (error instanceof Error) return rejectWithValue({ errorMessage: error.message })
   }
-);
+})
 
 interface BlogNewsAboutSliceState {
-  status: "" | "success" | "loading" | "error";
-  errorMsg: string;
-  data: IBlogNews;
+  status: "" | "idle" | "loading" | "succeeded" | "failed"
+  errorMsg: string
+  data: IBlogNews
 }
 
 const initialState: BlogNewsAboutSliceState = {
@@ -50,13 +43,14 @@ const initialState: BlogNewsAboutSliceState = {
   data: {
     id: 0,
     title: "",
-    category: "Blog",
-    date_posted: "",
+    category: "Блог",
+    created_at: "",
     image: "",
     content: null,
+    slides: [],
     similar: [],
   },
-};
+}
 
 const blogNewsAboutSlice = createSlice({
   name: "blogNewsAboutSlice",
@@ -64,17 +58,17 @@ const blogNewsAboutSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(getBlogNewsAbout.pending, (state) => {
-      state.status = "loading";
-    });
+      state.status = "loading"
+    })
     builder.addCase(getBlogNewsAbout.fulfilled, (state, action) => {
-      state.status = "success";
-      state.data = action.payload;
-    });
+      state.status = "succeeded"
+      state.data = action.payload
+    })
     builder.addCase(getBlogNewsAbout.rejected, (state, action) => {
-      state.status = "error";
-      state.errorMsg = action.payload?.errorMessage || "Someone went wrong";
-    });
+      state.status = "failed"
+      state.errorMsg = action.payload?.errorMessage || "Someone went wrong"
+    })
   },
-});
+})
 
-export default blogNewsAboutSlice.reducer;
+export default blogNewsAboutSlice.reducer
