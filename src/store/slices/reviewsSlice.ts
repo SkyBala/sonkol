@@ -21,19 +21,9 @@ export const getReviews = createAsyncThunk<
         [reviews.tour ? "tour" : ""]: reviews.tour,
       },
     })
+    console.log(data, "dadadadad")
 
-    const customedData = data.results?.map((review: any) => {
-      return {
-        ...review,
-        date: {
-          year: review.date.split("-")[0],
-          month: review.date.split("-")[1],
-          day: review.date.split("-")[2].slice(0, 2),
-        },
-      }
-    })
-
-    return customedData
+    return data.results
   } catch (error) {
     if (error instanceof Error) return rejectWithValue({ errorMessage: error.message })
   }
