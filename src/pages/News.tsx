@@ -4,9 +4,8 @@ import { getBlogNewsAbout } from "../store/slices/blogNewsAboutSlice"
 import { useParams } from "react-router-dom"
 import { useSelector } from "react-redux"
 import StatusCheck from "../components/ui/StatusCheck"
-// FIX ME
-// import BlogCard from "../components/blogNews/BlogCard"
-// import { IBlogNews } from "../@types"
+import BlogCard from "../components/blogNews/BlogCard"
+import { IBlogNews } from "../@types"
 
 const News: React.FC = () => {
   const dispatch = useAppDispatch()
@@ -40,12 +39,11 @@ const News: React.FC = () => {
           <div className="mt-80">
             <h2 className="title-2 text-black">Similar blogs</h2>
             <div className="mt-40 flex gap-[30px]">
-              {/* FIX ME */}
-              {/* {data.similar?.length ? (
-                data?.similar?.map((news: IBlogNews, index: number) => <BlogCard {...news} type="normal" key={index}/>)
-              ) : ( */}
-              <span>There is nothing here yet.</span>
-              {/* )} */}
+              {data.similar?.length ? (
+                data?.similar?.map((news: IBlogNews, index: number) => <BlogCard {...news} type="normal" key={index} />)
+              ) : (
+                <span>There is nothing here yet.</span>
+              )}
             </div>
           </div>
         </div>

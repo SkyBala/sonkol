@@ -11,12 +11,12 @@ export const getTour = createAsyncThunk<Tour, number, { rejectValue: MyKnownErro
   "tour/getTour",
   async (id, { rejectWithValue }) => {
     try {
-      const { data } = await $api(`tour/${id}`)
+      const { data } = await $api(`Tour/${id}`)
       const [program, dates, similarData, reviewsData] = await Promise.all([
-        $api("tour/TourProgram/", { params: { tour: id } }),
-        $api(`tour/TourDate/`),
-        $api("tour/TourAdd/", { params: { keyword: data.name, limit: 4 } }),
-        $api(`actions/comment/`),
+        $api("TourProgram/"),
+        $api(`TourDate/`),
+        $api("Tips/", { params: { keyword: data.name, limit: 4 } }),
+        $api(`comments/`),
       ])
 
       const similarTours = similarData.data?.results.filter((tour: ITourCard) => tour.name !== data.name) || []

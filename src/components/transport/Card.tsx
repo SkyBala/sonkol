@@ -23,9 +23,7 @@ const Card: React.FC<ICar> = ({
   configuration,
   consumption,
   car_with_driver,
-  how_days_driving_without_driver,
-  how_days_driving_without_driver_2,
-  how_days_driving_without_driver_3,
+  car_without_driver,
 }) => {
   const bookCar = () => {
     const message = "Hello. I want book a car"
@@ -129,15 +127,15 @@ const Card: React.FC<ICar> = ({
           <ul className="pt-[8px] pb-20 px-[8px] [&>:not(:last-child)]:mb-[16px]">
             <li className="flex justify-between ">
               <h4 className="font-medium max-w-[297px]">1-3 days</h4>
-              <span>{how_days_driving_without_driver}$</span>
+              <span>{car_without_driver.one_day}$</span>
             </li>
             <li className="flex justify-between">
               <h4 className="font-medium max-w-[297px]">4-5 days</h4>
-              <span>{how_days_driving_without_driver_2}$</span>
+              <span>{car_without_driver.two_day}$</span>
             </li>
             <li className="flex justify-between">
               <h4 className="font-medium max-w-[297px]">8 or more days</h4>
-              <span>{how_days_driving_without_driver_3}$</span>
+              <span>{car_without_driver.more_day}$</span>
             </li>
           </ul>
         </div>

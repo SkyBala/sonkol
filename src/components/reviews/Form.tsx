@@ -109,7 +109,6 @@ const Form: React.FC = () => {
   const sendForm = () => {
     const photos = new FormData()
     imageFiles?.forEach((image, i) => photos.append(`image${i}`, image))
-    console.log(photos, imageFiles)
 
     dispatch(
       sendReview({
