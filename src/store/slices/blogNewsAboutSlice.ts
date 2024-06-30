@@ -11,21 +11,13 @@ export const getBlogNewsAbout = createAsyncThunk<
   IBlogNews,
   { id: number; similarBlogsLimit: number; category: string },
   { rejectValue: MyKnownError; state: RootState }
->("blog-news-about", async ({ id, similarBlogsLimit, category }, { rejectWithValue }) => {
+>("blog-news-about", async ({ id }, { rejectWithValue }) => {
   try {
     const { data } = await $api(`/blog_news/${id}`)
-    const similarData = await $api(`/blog_news/`, {
-      params: {
-        keyword: data.title,
-        limit: similarBlogsLimit,
-        category,
-      },
-    })
-    const similar = similarData.data.results.filter((blogNews: IBlogNews) => blogNews.title !== data.title)
 
     if (!data) return rejectWithValue({ errorMessage: "This blog does not exist" })
 
-    return { ...data, similar: similar }
+    return { ...data }
   } catch (error) {
     if (error instanceof Error) return rejectWithValue({ errorMessage: error.message })
   }

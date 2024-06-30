@@ -21,7 +21,6 @@ export const getReviews = createAsyncThunk<
         [reviews.tour ? "tour" : ""]: reviews.tour,
       },
     })
-    console.log(data, "dadadadad")
 
     return data.results
   } catch (error) {

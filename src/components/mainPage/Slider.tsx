@@ -25,7 +25,6 @@ const Slider: React.FC = () => {
       // @ts-ignore
       setActiveIndex(+swiper.slides[swiper.activeIndex]?.dataset.id || 0)
   }
-  console.log(data[0]?.tours[0]?.image)
 
   const swiperBreakPoints = {
     768: {

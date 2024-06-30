@@ -105,10 +105,11 @@ export interface ICar {
     per_kilometer: number
     driver_comfort: number
   }
-  how_days_driving: number
-  how_days_driving_without_driver: number
-  how_days_driving_without_driver_2: number
-  how_days_driving_without_driver_3: number
+  car_without_driver: {
+    one_day: number
+    two_day: number
+    more_day: number
+  }
   photos: ICarPhoto[]
 }
 
